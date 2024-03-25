@@ -2,43 +2,46 @@ import { useQuery } from "react-query";
 import { useOutletContext } from "react-router-dom";
 import { fetchCoinHistory } from "../api";
 import ReactApexChart from "react-apexcharts";
+import { useState } from "react";
 interface IContext {
   coinId: string;
 }
 
-interface IHistorical {
-  time_open: number;
-  time_close: number;
-  open: string;
-  high: string;
-  low: string;
-  close: string;
-  volume: string;
-  market_cap: number;
+interface IDataArray extends Array<number> {
+  0: number; // timestamp
+  1: number; // open
+  2: number; // high
+  3: number; // low
+  4: number; // close
 }
+
+type IOhlc = IDataArray[];
 
 function Chart() {
   // const params = useParams();
   const { coinId } = useOutletContext<IContext>();
-  const { isLoading, data } = useQuery<IHistorical[]>(
-    ["ohlcv", coinId],
-    () => fetchCoinHistory(coinId),
-    {
-      refetchInterval: 10000,
-    }
+  const { isLoading, data } = useQuery<IOhlc>(["ohlc", coinId], () =>
+    fetchCoinHistory(`${coinId}`)
   );
-  console.log(data);
+  const seriesData = data?.map((i) => i[4]) ?? [];
+  const [chart, setChart] = useState("line");
+  const onClick = (shape: string) => {
+    setChart(shape);
+  };
   return (
     <div>
+      <button onClick={() => onClick("line")}>Line</button>
+      <button onClick={() => onClick("candle")}>Candle</button>
       {isLoading ? (
         "Loading chart..."
-      ) : (
+      ) : chart === "line" ? (
         <ReactApexChart
           type="line"
           series={[
             {
               name: "price",
-              data: data?.map((price) => parseFloat(price.close)) ?? [],
+              // data: data?.map((price) => parseFloat(price[4])) ?? [],
+              data: seriesData,
             },
           ]}
           options={{
@@ -70,12 +73,7 @@ function Chart() {
                 show: false,
               },
               // type: "datetime",
-              categories: data?.map(
-                (price) =>
-                  new Date(price.time_close * 1000)
-                    .toUTCString()
-                    .split(" 00")[0]
-              ),
+              categories: data?.map((item) => new Date(item[0]).toUTCString()),
             },
             fill: {
               type: "gradient",
@@ -88,6 +86,15 @@ function Chart() {
               },
             },
           }}
+        />
+      ) : (
+        <ReactApexChart
+          series={[
+            {
+              name: "price",
+              data: seriesData,
+            },
+          ]}
         />
       )}
     </div>
