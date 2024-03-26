@@ -42,6 +42,9 @@ const Button = styled.button<{ isActive: boolean }>`
     cursor: pointer;
   }
 `;
+interface IChartProps {
+  isDark: boolean;
+}
 function Chart() {
   // const params = useParams();
   const { coinId } = useOutletContext<IContext>();
@@ -54,11 +57,11 @@ function Chart() {
       // enabled: false,
     }
   );
-
   const [chart, setChart] = useState("line");
   const onClick = (shape: string) => {
     setChart(shape);
   };
+  const { isDark } = useOutletContext<IChartProps>();
   return (
     <div>
       <ChartButtons>
@@ -89,7 +92,7 @@ function Chart() {
           ]}
           options={{
             theme: {
-              mode: "dark",
+              mode: isDark ? "dark" : "light",
             },
             chart: {
               height: 300,
@@ -143,7 +146,7 @@ function Chart() {
           ]}
           options={{
             theme: {
-              mode: "dark",
+              mode: isDark ? "dark" : "light",
             },
             chart: {
               // type: "candlestick",

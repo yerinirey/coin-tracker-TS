@@ -1,9 +1,8 @@
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ThemeProvider } from "styled-components";
-import { lightTheme, darkTheme } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./Router";
 
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
@@ -12,9 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider theme={darkTheme}>
-      <App />
-    </ThemeProvider>
+    <RouterProvider router={router} />
   </QueryClientProvider>
   // </React.StrictMode>
 );

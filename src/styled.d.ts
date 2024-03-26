@@ -9,5 +9,6 @@ declare module "styled-components" {
     focusColor: string;
     red: string;
     green: string;
+    greyColor: string;
   }
 }

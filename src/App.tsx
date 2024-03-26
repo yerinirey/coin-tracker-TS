@@ -1,6 +1,8 @@
-import { createGlobalStyle } from "styled-components";
-import Router from "./Router";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { useState } from "react";
+import { darkTheme, lightTheme } from "./theme";
+import { Outlet, Route } from "react-router-dom";
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400&display=swap');
   html, body, div, span, applet, object, iframe,
@@ -67,11 +69,15 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  const [isDark, setIsDark] = useState(false);
+  const toggleDark = () => setIsDark((curr) => !curr);
   return (
     <>
-      <GlobalStyle />
-      <Router />
-      <ReactQueryDevtools />
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <Outlet context={{ toggleDark, isDark }} />
+        <ReactQueryDevtools />
+      </ThemeProvider>
     </>
   );
 }

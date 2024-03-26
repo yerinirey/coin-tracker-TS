@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useMatch, useParams } from "react-router-dom";
+import {
+  Outlet,
+  useLocation,
+  useMatch,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -162,6 +168,10 @@ interface IInfoData {
 const CurrentPrice = styled.span`
   color: ${(props) => props.theme.accentColor};
 `;
+interface ICoinProps {
+  isDark: boolean;
+}
+
 function Coin() {
   const { coinId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -177,6 +187,7 @@ function Coin() {
       retryDelay: 2 * 60 * 1000,
     }
   );
+  const { isDark } = useOutletContext<ICoinProps>();
   return (
     <Container>
       <Helmet>

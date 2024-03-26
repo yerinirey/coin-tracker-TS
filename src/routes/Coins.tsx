@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
+import { FaMoon, FaSun } from "react-icons/fa";
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 600px;
@@ -12,14 +13,32 @@ const Container = styled.div`
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
   font-size: 48px;
+  position: absolute;
 `;
 const Header = styled.header`
-  height: 15vh;
+  height: 13vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  position: relative;
 `;
-
+const ToggleBtn = styled.button`
+  border: none;
+  background-color: ${(props) => props.theme.textColor};
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.bgColor};
+  border-radius: 0.8rem;
+  &:hover {
+    cursor: pointer;
+  }
+  position: absolute;
+  right: 0;
+  transform: translateX(-50px);
+`;
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
@@ -88,7 +107,7 @@ const CoinPercentage = styled.span<IMinus>`
 `;
 const CoinPercentagePrice = styled.span`
   font-weight: lighter;
-  color: rgba(255, 255, 255, 0.3);
+  color: ${(props) => props.theme.greyColor};
   font-size: 14px;
 `;
 const PercentageBox = styled.div`
@@ -133,12 +152,17 @@ const Loader = styled.span`
   text-align: center;
   display: block;
 `;
+interface ICoinsProp {
+  toggleDark: () => void;
+  isDark: boolean;
+}
+
 function Coins() {
   const { isLoading, data, error } = useQuery<ICoin[]>("allCoins", fetchCoins, {
     retry: 1,
     retryDelay: 2 * 60 * 1000,
   });
-
+  const { toggleDark, isDark } = useOutletContext<ICoinsProp>();
   return (
     <Container>
       <Helmet>
@@ -146,9 +170,14 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>Top 50 Cryptos</Title>
+        <ToggleBtn onClick={toggleDark}>
+          {isDark ? <FaSun /> : <FaMoon />}
+        </ToggleBtn>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>
+      ) : !data ? (
+        <Loader>Data Loading...</Loader>
       ) : (
         <CoinsList>
           <CoinHeader>
@@ -159,7 +188,7 @@ function Coins() {
             </div>
             <span>24h Change</span>
           </CoinHeader>
-          {data?.slice(0, 100).map((coin, idx) => (
+          {data?.map((coin, idx) => (
             <Coin key={coin.id}>
               <Link
                 to={`/${coin.id}`}
