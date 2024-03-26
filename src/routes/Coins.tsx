@@ -3,9 +3,10 @@ import styled from "styled-components";
 import { fetchCoins } from "../api";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
+import { useEffect } from "react";
 const Container = styled.div`
   padding: 0px 20px;
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 `;
 const Title = styled.h1`
@@ -25,10 +26,9 @@ const Coin = styled.li`
   background-color: ${(props) => props.theme.boxColor};
   width: 100%;
   color: white;
-  margin-bottom: 6px;
-  border-radius: 4px;
+  margin-bottom: 2px;
   a {
-    padding: 14px;
+    padding: 20px;
     display: flex;
     align-items: center;
   }
@@ -36,13 +36,31 @@ const Coin = styled.li`
     background-color: ${(props) => props.theme.focusColor};
   }
 `;
+
 const CoinBox = styled.div`
   display: grid;
   width: 100%;
-  grid-template-columns: 5% 50% 15%;
+  grid-template-columns: 10% 55% 35%;
   align-items: center;
-  text-align: center;
 `;
+const CoinHeader = styled(CoinBox)`
+  padding: 24px 14px;
+  background-color: ${(props) => props.theme.boxColor};
+  margin-bottom: 2px;
+  border-radius: 24px 24px 4px 4px;
+  text-align: end;
+  span {
+    font-weight: 400;
+  }
+  :first-child {
+    text-align: start;
+  }
+  div {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
 const CoinContentOne = styled.div`
   /* width: 150%; */
   display: flex;
@@ -65,8 +83,19 @@ const CoinPercentage = styled.span<IMinus>`
   background-color: ${($props) => ($props.isminus ? "#ee5253" : "#10ac84")};
   text-align: right;
   color: rgba(0, 0, 0, 0.6);
-  padding: 4px 4px;
+  padding: 2px 4px;
   border-radius: 0.3rem;
+`;
+const CoinPercentagePrice = styled.span`
+  font-weight: lighter;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+`;
+const PercentageBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  gap: 6px;
 `;
 const Img = styled.img`
   width: 35px;
@@ -105,19 +134,10 @@ const Loader = styled.span`
   display: block;
 `;
 function Coins() {
-  /*
-  const [coins, setCoins] = useState<ICoin[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("https://api.coinpaprika.com/v1/coins");
-      const json = await response.json();
-      setCoins(json.slice(0, 100));
-      setLoading(false);
-    })();
-  }, []);
-  */
-  const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
+  const { isLoading, data, error } = useQuery<ICoin[]>("allCoins", fetchCoins, {
+    retry: 1,
+    retryDelay: 2 * 60 * 1000,
+  });
 
   return (
     <Container>
@@ -131,6 +151,14 @@ function Coins() {
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
+          <CoinHeader>
+            <span>#</span>
+            <div>
+              <span>name</span>
+              <span>price</span>
+            </div>
+            <span>24h Change</span>
+          </CoinHeader>
           {data?.slice(0, 100).map((coin, idx) => (
             <Coin key={coin.id}>
               <Link
@@ -141,6 +169,7 @@ function Coins() {
               >
                 <CoinBox>
                   <div>{idx + 1}</div>
+                  {/* 이미지, 코인이름 */}
                   <CoinContentOne>
                     <CoinName>
                       <Img src={coin.image} />
@@ -148,21 +177,32 @@ function Coins() {
                     </CoinName>
                     <div>${coin.current_price}</div>
                   </CoinContentOne>
+                  {/* 변동폭 */}
                   <CoinContentTwo>
                     {coin.price_change_percentage_24h < 0 ? (
-                      <CoinPercentage isminus={true}>
-                        ▾
-                        {
-                          coin.price_change_percentage_24h
-                            .toFixed(2)
-                            .split("-")[1]
-                        }
-                        %
-                      </CoinPercentage>
+                      <PercentageBox>
+                        <CoinPercentagePrice>
+                          {coin.price_change_24h.toString().substring(0, 7)}
+                        </CoinPercentagePrice>
+                        <CoinPercentage isminus={true}>
+                          ▾
+                          {
+                            coin.price_change_percentage_24h
+                              .toFixed(2)
+                              .split("-")[1]
+                          }
+                          %
+                        </CoinPercentage>
+                      </PercentageBox>
                     ) : (
-                      <CoinPercentage isminus={false}>
-                        ▴{coin.price_change_percentage_24h.toFixed(2)}%
-                      </CoinPercentage>
+                      <PercentageBox>
+                        <CoinPercentagePrice>
+                          +{coin.price_change_24h.toString().substring(0, 7)}
+                        </CoinPercentagePrice>
+                        <CoinPercentage isminus={false}>
+                          ▴{coin.price_change_percentage_24h.toFixed(2)}%
+                        </CoinPercentage>
+                      </PercentageBox>
                     )}
                   </CoinContentTwo>
                 </CoinBox>

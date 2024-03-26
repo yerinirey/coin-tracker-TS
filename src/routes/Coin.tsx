@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { fetchCoinHistory, fetchCoinInfo } from "../api";
 import { Helmet } from "react-helmet";
+import { darkTheme, lightTheme } from "../theme";
 
 const Container = styled.div`
   padding: 0px 20px;
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 `;
 const Title = styled.h1`
@@ -56,7 +57,7 @@ const Tabs = styled.div`
   margin: 25px 0px;
   gap: 10px;
 `;
-const Tab = styled.span<{ actived: any }>`
+const Tab = styled.span<{ isActive: any }>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
@@ -64,8 +65,8 @@ const Tab = styled.span<{ actived: any }>`
   background-color: ${(props) => props.theme.boxColor};
   padding: 7px 0px;
   border-radius: 10px;
-  color: ${(props) =>
-    props.actived ? props.theme.accentColor : props.theme.textColor};
+  color: ${($props) =>
+    $props.isActive ? $props.theme.accentColor : $props.theme.textColor};
   a {
     display: block;
   }
@@ -97,39 +98,6 @@ interface ILocation {
   };
 }
 
-interface IPriceData {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  total_supply: number;
-  max_supply: number;
-  beta_value: number;
-  first_data_at: string;
-  last_updated: string;
-  quotes: {
-    USD: {
-      ath_date: string;
-      ath_price: number;
-      market_cap: number;
-      market_cap_change_24h: number;
-      percent_change_1h: number;
-      percent_change_1y: number;
-      percent_change_6h: number;
-      percent_change_7d: number;
-      percent_change_12h: number;
-      percent_change_15m: number;
-      percent_change_24h: number;
-      percent_change_30d: number;
-      percent_change_30m: number;
-      percent_from_price_ath: number;
-      price: number;
-      volume_24h: number;
-      volume_24h_change_24h: number;
-    };
-  };
-}
-
 interface IMarketData {
   current_price: {
     usd: number; // 달러에 대한 가격
@@ -147,6 +115,9 @@ interface IMarketData {
     eth: number;
   };
   price_change_24h: number;
+  price_change_percentage_1h_in_currency: {
+    usd: number;
+  };
   price_change_percentage_24h: number;
   price_change_percentage_7d: number;
   price_change_percentage_14d: number;
@@ -188,7 +159,9 @@ interface IInfoData {
   last_updated: string;
   // tickers: object;
 }
-
+const CurrentPrice = styled.span`
+  color: ${(props) => props.theme.accentColor};
+`;
 function Coin() {
   const { coinId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -196,10 +169,14 @@ function Coin() {
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
   const onOpen = () => setIsOpen(!isOpen);
-  const { isLoading, data } = useQuery<IInfoData>(["info", coinId], () =>
-    fetchCoinInfo(`${coinId}`)
+  const { isLoading, data } = useQuery<IInfoData>(
+    ["info", coinId],
+    () => fetchCoinInfo(`${coinId}`),
+    {
+      retry: 1,
+      retryDelay: 2 * 60 * 1000,
+    }
   );
-  console.log(chartMatch);
   return (
     <Container>
       <Helmet>
@@ -230,7 +207,7 @@ function Coin() {
             </OverviewItem>
             <OverviewItem>
               <span>Price:</span>
-              <span>{`$${data?.market_data.current_price.usd}`}</span>
+              <CurrentPrice>{`$${data?.market_data.current_price.usd}`}</CurrentPrice>
             </OverviewItem>
           </Overview>
           <Description>
@@ -249,18 +226,18 @@ function Coin() {
           <Overview>
             <OverviewItem>
               <span>Total Supply:</span>
-              <span>{data?.market_data.total_supply}</span>
+              <span>{data?.market_data.total_supply ?? "unprovided"}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{data?.market_data.max_supply}</span>
+              <span>{data?.market_data.max_supply ?? "unprovided"}</span>
             </OverviewItem>
           </Overview>
           <Tabs>
-            <Tab actived={chartMatch !== null}>
+            <Tab isActive={chartMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
             </Tab>
-            <Tab actived={priceMatch !== null}>
+            <Tab isActive={priceMatch !== null}>
               <Link to={`/${coinId}/price`}>Price</Link>
             </Tab>
           </Tabs>
