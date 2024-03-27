@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { fetchCoins } from "../api";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
-import { useEffect } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 600px;
@@ -38,6 +39,7 @@ const ToggleBtn = styled.button`
   position: absolute;
   right: 0;
   transform: translateX(-50px);
+  margin-top: 10px;
 `;
 const CoinsList = styled.ul``;
 
@@ -152,17 +154,16 @@ const Loader = styled.span`
   text-align: center;
   display: block;
 `;
-interface ICoinsProp {
-  toggleDark: () => void;
-  isDark: boolean;
-}
 
 function Coins() {
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDarkAtom((curr) => !curr);
+  const isDark = useRecoilValue(isDarkAtom);
   const { isLoading, data, error } = useQuery<ICoin[]>("allCoins", fetchCoins, {
     retry: 1,
     retryDelay: 2 * 60 * 1000,
   });
-  const { toggleDark, isDark } = useOutletContext<ICoinsProp>();
+  console.log(data);
   return (
     <Container>
       <Helmet>
@@ -170,13 +171,13 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>Top 50 Cryptos</Title>
-        <ToggleBtn onClick={toggleDark}>
+        <ToggleBtn onClick={toggleDarkAtom}>
           {isDark ? <FaSun /> : <FaMoon />}
         </ToggleBtn>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>
-      ) : !data ? (
+      ) : data === undefined ? (
         <Loader>Data Loading...</Loader>
       ) : (
         <CoinsList>

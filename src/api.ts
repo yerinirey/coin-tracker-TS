@@ -19,6 +19,3 @@ export function fetchCoinHistory(coinId: string) {
     (response) => response.json()
   );
 }
-// export function fetchCoinCosts(coinId: string) {
-//   return fetch(`${BASE_URL}/${coinId}/market_chart?vs_currency=usd&days=`);
-// }

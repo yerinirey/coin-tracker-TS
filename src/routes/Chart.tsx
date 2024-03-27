@@ -2,9 +2,11 @@ import { useQuery } from "react-query";
 import { useOutletContext } from "react-router-dom";
 import { fetchCoinHistory } from "../api";
 import ReactApexChart from "react-apexcharts";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdOutlineCandlestickChart, MdOutlineShowChart } from "react-icons/md";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atoms";
 interface IContext {
   coinId: string;
 }
@@ -42,9 +44,7 @@ const Button = styled.button<{ isActive: boolean }>`
     cursor: pointer;
   }
 `;
-interface IChartProps {
-  isDark: boolean;
-}
+
 function Chart() {
   // const params = useParams();
   const { coinId } = useOutletContext<IContext>();
@@ -61,7 +61,7 @@ function Chart() {
   const onClick = (shape: string) => {
     setChart(shape);
   };
-  const { isDark } = useOutletContext<IChartProps>();
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <div>
       <ChartButtons>

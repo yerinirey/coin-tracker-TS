@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Outlet,
   useLocation,
@@ -9,9 +9,8 @@ import {
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
-import { fetchCoinHistory, fetchCoinInfo } from "../api";
+import { fetchCoinInfo } from "../api";
 import { Helmet } from "react-helmet";
-import { darkTheme, lightTheme } from "../theme";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -168,9 +167,6 @@ interface IInfoData {
 const CurrentPrice = styled.span`
   color: ${(props) => props.theme.accentColor};
 `;
-interface ICoinProps {
-  isDark: boolean;
-}
 
 function Coin() {
   const { coinId } = useParams();
@@ -187,7 +183,6 @@ function Coin() {
       retryDelay: 2 * 60 * 1000,
     }
   );
-  const { isDark } = useOutletContext<ICoinProps>();
   return (
     <Container>
       <Helmet>

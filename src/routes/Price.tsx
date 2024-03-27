@@ -1,9 +1,7 @@
 import { useOutletContext } from "react-router-dom";
-import { fetchCoinInfo } from "../api";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { PiChartLineDown, PiChartLineUp } from "react-icons/pi";
-import { lightTheme, darkTheme } from "../theme";
 interface IContext {
   coinId: string;
 }
@@ -101,14 +99,13 @@ const Percentage = styled.div<{ isminus: boolean }>`
   }
   :last-child {
     font-size: 36px;
-    font-weight: 500;
+    font-weight: 550;
     color: ${(props) => (props.isminus ? props.theme.red : props.theme.green)};
   }
 `;
 const Icon = styled.div``;
 function Price() {
   const { coinId } = useOutletContext<IContext>();
-  // const {data} = useQuery(["info", coinId], () => fetchCoinInfo(`${coinId}`));
   const { isLoading, data } = useQuery<IInfoData>(["info", coinId]);
   return (
     <>
@@ -129,7 +126,7 @@ function Price() {
                 data.market_data.price_change_percentage_1h_in_currency.usd < 0
               }
             >
-              <span>1h: </span>
+              <span>1 hour</span>
               <span>
                 {data.market_data.price_change_percentage_1h_in_currency.usd.toFixed(
                   3
@@ -147,7 +144,7 @@ function Price() {
             <Percentage
               isminus={data.market_data.price_change_percentage_24h < 0}
             >
-              <span>1d: </span>
+              <span>24 hours</span>
               <span>
                 {data.market_data.price_change_percentage_24h.toFixed(3)}%
               </span>
@@ -162,7 +159,7 @@ function Price() {
             <Percentage
               isminus={data.market_data.price_change_percentage_7d < 0}
             >
-              <span>7d: </span>
+              <span>7 days</span>
               <span>
                 {data.market_data.price_change_percentage_7d.toFixed(3)}%
               </span>
@@ -177,7 +174,7 @@ function Price() {
             <Percentage
               isminus={data.market_data.price_change_percentage_14d < 0}
             >
-              <span>14d:</span>
+              <span>14 days</span>
               <span>
                 {data.market_data.price_change_percentage_14d.toFixed(3)}%
               </span>
@@ -192,7 +189,7 @@ function Price() {
             <Percentage
               isminus={data.market_data.price_change_percentage_30d < 0}
             >
-              <span>1m: </span>
+              <span>30 days</span>
               <span>
                 {data.market_data.price_change_percentage_30d.toFixed(3)}%
               </span>
@@ -207,7 +204,7 @@ function Price() {
             <Percentage
               isminus={data.market_data.price_change_percentage_60d < 0}
             >
-              <span>2m: </span>
+              <span>60 days</span>
               <span>
                 {data.market_data.price_change_percentage_60d.toFixed(3)}%
               </span>
@@ -222,7 +219,7 @@ function Price() {
             <Percentage
               isminus={data.market_data.price_change_percentage_1y < 0}
             >
-              <span>1y: </span>
+              <span>1 year</span>
               <span>
                 {data.market_data.price_change_percentage_1y.toFixed(3)}%
               </span>
