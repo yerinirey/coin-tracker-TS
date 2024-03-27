@@ -1,12 +1,12 @@
 import { ThemeProvider, createGlobalStyle } from "styled-components";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { darkTheme, lightTheme } from "./theme";
-import { Outlet } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "./atoms";
+import Router from "./Router";
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400&display=swap');
-  html, body, div, span, applet, object, iframe,
+
+html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
   del, dfn, em, img, ins, kbd, q, s, samp,
@@ -75,8 +75,8 @@ function App() {
     <>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
         <GlobalStyle />
-        <Outlet />
-        <ReactQueryDevtools />
+        <Router />
+        {/* <ReactQueryDevtools /> */}
       </ThemeProvider>
     </>
   );

@@ -1,9 +1,8 @@
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./Router";
 import { RecoilRoot } from "recoil";
+import App from "./App";
 
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
@@ -13,7 +12,7 @@ root.render(
   // <React.StrictMode>
   <RecoilRoot>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <App />
     </QueryClientProvider>
   </RecoilRoot>
   // </React.StrictMode>
