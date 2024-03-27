@@ -7,7 +7,7 @@ import App from "./App";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: `${process.env.PUBLIC_URL}/`,
     element: <App />,
     children: [
       { index: true, element: <Coins /> },

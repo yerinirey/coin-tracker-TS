@@ -1,6 +1,5 @@
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { useState } from "react";
 import { darkTheme, lightTheme } from "./theme";
 import { Outlet } from "react-router-dom";
 import { useRecoilValue } from "recoil";

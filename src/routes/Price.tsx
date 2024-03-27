@@ -103,7 +103,6 @@ const Percentage = styled.div<{ isminus: boolean }>`
     color: ${(props) => (props.isminus ? props.theme.red : props.theme.green)};
   }
 `;
-const Icon = styled.div``;
 function Price() {
   const { coinId } = useOutletContext<IContext>();
   const { isLoading, data } = useQuery<IInfoData>(["info", coinId]);

@@ -1,4 +1,4 @@
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
 import { useQuery } from "react-query";
@@ -159,7 +159,7 @@ function Coins() {
   const setDarkAtom = useSetRecoilState(isDarkAtom);
   const toggleDarkAtom = () => setDarkAtom((curr) => !curr);
   const isDark = useRecoilValue(isDarkAtom);
-  const { isLoading, data, error } = useQuery<ICoin[]>("allCoins", fetchCoins, {
+  const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins, {
     retry: 1,
     retryDelay: 2 * 60 * 1000,
   });
