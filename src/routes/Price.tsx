@@ -89,7 +89,7 @@ const Box = styled.div`
     margin: -8px;
   }
 `;
-const Percentage = styled.div<{ isminus: boolean }>`
+const Percentage = styled.div<{ $isMinus: boolean }>`
   display: flex;
   flex-direction: column;
   :first-child {
@@ -100,7 +100,7 @@ const Percentage = styled.div<{ isminus: boolean }>`
   :last-child {
     font-size: 36px;
     font-weight: 550;
-    color: ${(props) => (props.isminus ? props.theme.red : props.theme.green)};
+    color: ${(props) => (props.$isMinus ? props.theme.red : props.theme.green)};
   }
 `;
 function Price() {
@@ -121,7 +121,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={
+              $isMinus={
                 data.market_data.price_change_percentage_1h_in_currency.usd < 0
               }
             >
@@ -141,7 +141,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={data.market_data.price_change_percentage_24h < 0}
+              $isMinus={data.market_data.price_change_percentage_24h < 0}
             >
               <span>24 hours</span>
               <span>
@@ -156,7 +156,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={data.market_data.price_change_percentage_7d < 0}
+              $isMinus={data.market_data.price_change_percentage_7d < 0}
             >
               <span>7 days</span>
               <span>
@@ -171,7 +171,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={data.market_data.price_change_percentage_14d < 0}
+              $isMinus={data.market_data.price_change_percentage_14d < 0}
             >
               <span>14 days</span>
               <span>
@@ -186,7 +186,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={data.market_data.price_change_percentage_30d < 0}
+              $isMinus={data.market_data.price_change_percentage_30d < 0}
             >
               <span>30 days</span>
               <span>
@@ -201,7 +201,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={data.market_data.price_change_percentage_60d < 0}
+              $isMinus={data.market_data.price_change_percentage_60d < 0}
             >
               <span>60 days</span>
               <span>
@@ -216,7 +216,7 @@ function Price() {
               <PiChartLineUp size={64} color={"#10ac84"} />
             )}
             <Percentage
-              isminus={data.market_data.price_change_percentage_1y < 0}
+              $isMinus={data.market_data.price_change_percentage_1y < 0}
             >
               <span>1 year</span>
               <span>

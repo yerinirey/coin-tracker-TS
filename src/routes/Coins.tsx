@@ -14,7 +14,6 @@ const Container = styled.div`
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
   font-size: 48px;
-  position: absolute;
 `;
 const Header = styled.header`
   height: 13vh;
@@ -22,7 +21,6 @@ const Header = styled.header`
   justify-content: center;
   align-items: center;
   text-align: center;
-  position: relative;
 `;
 const ToggleBtn = styled.button`
   border: none;
@@ -37,9 +35,8 @@ const ToggleBtn = styled.button`
     cursor: pointer;
   }
   position: absolute;
-  right: 0;
-  transform: translateX(-50px);
-  margin-top: 10px;
+  right: 10px;
+  top: 10px;
 `;
 const CoinsList = styled.ul``;
 
@@ -98,10 +95,10 @@ const CoinName = styled.div`
   align-items: center;
 `;
 interface IMinus {
-  isminus: boolean;
+  $isMinus: boolean;
 }
 const CoinPercentage = styled.span<IMinus>`
-  background-color: ${($props) => ($props.isminus ? "#ee5253" : "#10ac84")};
+  background-color: ${($props) => ($props.$isMinus ? "#ee5253" : "#10ac84")};
   text-align: right;
   color: rgba(0, 0, 0, 0.6);
   padding: 2px 4px;
@@ -163,85 +160,86 @@ function Coins() {
     retry: 1,
     retryDelay: 2 * 60 * 1000,
   });
-  console.log(data);
   return (
-    <Container>
-      <Helmet>
-        <title>Top 50 Cryptos</title>
-      </Helmet>
-      <Header>
-        <Title>Top 50 Cryptos</Title>
-        <ToggleBtn onClick={toggleDarkAtom}>
-          {isDark ? <FaSun /> : <FaMoon />}
-        </ToggleBtn>
-      </Header>
-      {isLoading ? (
-        <Loader>Loading...</Loader>
-      ) : data === undefined ? (
-        <Loader>Data Loading...</Loader>
-      ) : (
-        <CoinsList>
-          <CoinHeader>
-            <span>#</span>
-            <div>
-              <span>name</span>
-              <span>price</span>
-            </div>
-            <span>24h Change</span>
-          </CoinHeader>
-          {data?.map((coin, idx) => (
-            <Coin key={coin.id}>
-              <Link
-                to={`/${coin.id}`}
-                state={{
-                  id: coin.id,
-                }}
-              >
-                <CoinBox>
-                  <div>{idx + 1}</div>
-                  {/* 이미지, 코인이름 */}
-                  <CoinContentOne>
-                    <CoinName>
-                      <Img src={coin.image} />
-                      {coin.name}
-                    </CoinName>
-                    <div>${coin.current_price}</div>
-                  </CoinContentOne>
-                  {/* 변동폭 */}
-                  <CoinContentTwo>
-                    {coin.price_change_percentage_24h < 0 ? (
-                      <PercentageBox>
-                        <CoinPercentagePrice>
-                          {coin.price_change_24h.toString().substring(0, 7)}
-                        </CoinPercentagePrice>
-                        <CoinPercentage isminus={true}>
-                          ▾
-                          {
-                            coin.price_change_percentage_24h
-                              .toFixed(2)
-                              .split("-")[1]
-                          }
-                          %
-                        </CoinPercentage>
-                      </PercentageBox>
-                    ) : (
-                      <PercentageBox>
-                        <CoinPercentagePrice>
-                          +{coin.price_change_24h.toString().substring(0, 7)}
-                        </CoinPercentagePrice>
-                        <CoinPercentage isminus={false}>
-                          ▴{coin.price_change_percentage_24h.toFixed(2)}%
-                        </CoinPercentage>
-                      </PercentageBox>
-                    )}
-                  </CoinContentTwo>
-                </CoinBox>
-              </Link>
-            </Coin>
-          ))}
-        </CoinsList>
-      )}
-    </Container>
+    <>
+      <ToggleBtn onClick={toggleDarkAtom}>
+        {isDark ? <FaSun /> : <FaMoon />}
+      </ToggleBtn>
+      <Container>
+        <Helmet>
+          <title>Top 50 Cryptos</title>
+        </Helmet>
+        <Header>
+          <Title>Top 50 Cryptos</Title>
+        </Header>
+        {isLoading ? (
+          <Loader>Loading...</Loader>
+        ) : data === undefined ? (
+          <Loader>Data Loading...</Loader>
+        ) : (
+          <CoinsList>
+            <CoinHeader>
+              <span>#</span>
+              <div>
+                <span>name</span>
+                <span>price</span>
+              </div>
+              <span>24h Change</span>
+            </CoinHeader>
+            {data?.map((coin, idx) => (
+              <Coin key={coin.id}>
+                <Link
+                  to={`/${coin.id}`}
+                  state={{
+                    id: coin.id,
+                  }}
+                >
+                  <CoinBox>
+                    <div>{idx + 1}</div>
+                    {/* 이미지, 코인이름 */}
+                    <CoinContentOne>
+                      <CoinName>
+                        <Img src={coin.image} />
+                        {coin.name}
+                      </CoinName>
+                      <div>${coin.current_price}</div>
+                    </CoinContentOne>
+                    {/* 변동폭 */}
+                    <CoinContentTwo>
+                      {coin.price_change_percentage_24h < 0 ? (
+                        <PercentageBox>
+                          <CoinPercentagePrice>
+                            {coin.price_change_24h.toString().substring(0, 7)}
+                          </CoinPercentagePrice>
+                          <CoinPercentage $isMinus={true}>
+                            ▾
+                            {
+                              coin.price_change_percentage_24h
+                                .toFixed(2)
+                                .split("-")[1]
+                            }
+                            %
+                          </CoinPercentage>
+                        </PercentageBox>
+                      ) : (
+                        <PercentageBox>
+                          <CoinPercentagePrice>
+                            +{coin.price_change_24h.toString().substring(0, 7)}
+                          </CoinPercentagePrice>
+                          <CoinPercentage $isMinus={false}>
+                            ▴{coin.price_change_percentage_24h.toFixed(2)}%
+                          </CoinPercentage>
+                        </PercentageBox>
+                      )}
+                    </CoinContentTwo>
+                  </CoinBox>
+                </Link>
+              </Coin>
+            ))}
+          </CoinsList>
+        )}
+      </Container>
+    </>
   );
 }
 
